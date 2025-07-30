@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Users, ShoppingBag, IndianRupee, 
   BarChart3, Settings, LogOut, X, Menu
 } from 'lucide-react';
-import './AdminSidebar.css';
+import './Admin-Sidebar.css';
 
 const AdminSidebar = ({ isOpen, onToggle }) => {
   const [activeItem, setActiveItem] = React.useState('dashboard');

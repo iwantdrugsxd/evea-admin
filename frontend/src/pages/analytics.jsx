@@ -1,14 +1,15 @@
 // src/pages/admin/analytics.jsx
+// src/pages/admin/analytics.jsx
 import React, { useState, useEffect } from 'react';
 import { 
   BarChart3, TrendingUp, Users, DollarSign, 
   Calendar, Download, Filter, RefreshCw,
   Eye, Star, Clock, Target
 } from 'lucide-react';
-import AdminLayout from '../../components/admin/layout/admin-layout/AdminLayout';
-import AnalyticsCards from '../../components/admin/analytics/analytics-cards/AnalyticsCards';
-import TrendCharts from '../../components/admin/analytics/trend-charts/TrendCharts';
-import PerformanceMetrics from '../../components/admin/analytics/performance-metrics/PerformanceMetrics';
+import AdminLayout from '../components/common/admin-layout/Admin-Layout.jsx'; 
+import AnalyticsCards from '../components/admin/analytics/analytics-cards/AnalyticsCards.jsx';  // Corrected
+import TrendCharts from '../components/admin/analytics/trend-charts/TrendCharts.jsx';  // Corrected
+import PerformanceMetrics from '../components/admin/analytics/performance-metrics/PerformanceMetrics.jsx';  // Corrected
 import './analytics.css';
 
 const Analytics = () => {

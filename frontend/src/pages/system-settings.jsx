@@ -5,10 +5,10 @@ import {
   RefreshCw, AlertTriangle, CheckCircle, 
   Database, Globe, Bell, Lock
 } from 'lucide-react';
-import AdminLayout from '../../components/admin/layout/admin-layout/AdminLayout';
-import PlatformConfig from '../../components/admin/settings/platform-config/PlatformConfig';
-import EmailSettings from '../../components/admin/settings/email-settings/EmailSettings';
-import SecuritySettings from '../../components/admin/settings/security-settings/SecuritySettings';
+import AdminLayout from '../components/common/admin-layout/Admin-Layout.jsx';
+import PlatformConfig from '../components/admin/settings/platform-config/PlatformConfig.jsx';  // Corrected
+import EmailSettings from '../components/admin/settings/email-settings/EmailSettings.jsx';  // Corrected
+import SecuritySettings from '../components/admin/settings/security-settings/SecuritySettings.jsx';  // Corrected
 import './system-settings.css';
 
 const SystemSettings = () => {

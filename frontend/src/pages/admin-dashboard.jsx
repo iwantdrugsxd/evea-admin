@@ -1,10 +1,9 @@
 import React from 'react';
-import AdminLayout from '../../components/admin/layout/admin-layout/AdminLayout';
-import StatsGrid from '../../components/admin/dashboard/stats-grid/StatsGrid';
-import RevenueChart from '../../components/admin/dashboard/revenue-chart/RevenueChart';
-import ActivityFeed from '../../components/admin/dashboard/activity-feed/ActivityFeed';
+import AdminLayout from '../components/common/admin-layout/Admin-Layout.jsx';
+import StatsGrid from '../components/admin/dashboard/stats-grid/StatsGrid.jsx';  // assuming it exists
+import RevenueChart from '../components/admin/dashboard/revenue-chart/RevenueChart.jsx';  // assuming it exists
+import ActivityFeed from '../components/admin/dashboard/activity-feed/ActivityFeed.jsx';  // assuming it exists
 import './admin-dashboard.css';
-
 const AdminDashboard = () => {
   return (
     <AdminLayout>

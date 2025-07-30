@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import AdminLayout from '../../components/admin/layout/admin-layout/AdminLayout';
+import React, { useState, useEffect } from 'react';
 import { 
-  Search, Filter, Calendar, Download, Eye, 
-  MoreVertical, CheckCircle, Clock, XCircle,
-  Phone, Mail, MapPin, IndianRupee
+  ShoppingBag, Calendar, DollarSign, Clock, 
+  Search, Filter, Download, Eye 
 } from 'lucide-react';
+import AdminLayout from '../components/common/admin-layout/Admin-Layout.jsx';
+import OrdersTable from '../components/admin/orders/orders-table/OrdersTable.jsx';  // Corrected
+import OrderDetails from '../components/admin/orders/order-details/OrderDetails.jsx';  // Corrected
 import './order-management.css';
 
 const OrderManagement = () => {

@@ -3,7 +3,7 @@ import {
   Bell, Search, Menu, ChevronDown, Settings, 
   LogOut, User, HelpCircle 
 } from 'lucide-react';
-import './AdminHeader.css';
+import './Admin-Header.css';
 
 const AdminHeader = ({ onToggleSidebar }) => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);

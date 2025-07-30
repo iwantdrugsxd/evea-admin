@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import AdminSidebar from '../admin-sidebar/AdminSidebar';
-import AdminHeader from '../admin-header/AdminHeader';
-import './AdminLayout.css';
+import AdminSidebar from '../admin-sidebar/Admin-Sidebar';
+import AdminHeader from '../admin-header/Admin-Header';
+import './Admin-Layout.css';
 
 const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
