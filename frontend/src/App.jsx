@@ -31,8 +31,8 @@ function App() {
           <Route path="/admin/system-settings" element={<SystemSettings />} />
           
           {/* Default redirect */}
-          <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="pages/auth/login" replace />} />
+          <Route path="/" element={<Navigate to="/auth/login" replace />} />
+          <Route path="*" element={<Navigate to="/auth/login" replace />} />
         </Routes>
       </div>
     </Router>

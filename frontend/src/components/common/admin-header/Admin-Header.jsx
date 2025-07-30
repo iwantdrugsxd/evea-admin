@@ -1,198 +1,312 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
-  Bell, Search, Menu, ChevronDown, Settings, 
-  LogOut, User, HelpCircle 
+  Menu, Search, Bell, User, Settings, 
+  LogOut, ChevronDown, Moon, Sun, Mail,
+  HelpCircle, Shield, Calendar, Clock
 } from 'lucide-react';
 import './Admin-Header.css';
 
-const AdminHeader = ({ onToggleSidebar }) => {
+const AdminHeader = ({ onToggleSidebar, sidebarOpen }) => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [darkMode, setDarkMode] = useState(false);
+  const [user, setUser] = useState(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  
+  const profileMenuRef = useRef(null);
+  const notificationRef = useRef(null);
+
+  // Get user info from localStorage
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      try {
+        setUser(JSON.parse(userData));
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
+  }, []);
+
+  // Update time every minute
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Close menus when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setShowProfileMenu(false);
+      }
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const notifications = [
     {
       id: 1,
-      title: 'New vendor registration',
-      message: 'Royal Wedding Photography submitted application',
-      time: '2 mins ago',
-      type: 'vendor',
-      unread: true
+      type: 'order',
+      title: 'New Order Received',
+      message: 'Wedding photography order from Mumbai',
+      time: '2 minutes ago',
+      unread: true,
+      avatar: '📸'
     },
     {
       id: 2,
-      title: 'Payment received',
-      message: 'Payment of ₹75,000 received for booking #ORD-2024-001',
-      time: '15 mins ago',
-      type: 'payment',
-      unread: true
+      type: 'vendor',
+      title: 'Vendor Application',
+      message: 'Delhi Caterers submitted application',
+      time: '15 minutes ago',
+      unread: true,
+      avatar: '👨‍🍳'
     },
     {
       id: 3,
-      title: 'New order placed',
-      message: 'Corporate event photography booking confirmed',
+      type: 'payment',
+      title: 'Payment Confirmed',
+      message: '₹45,000 payment received for order #1234',
       time: '1 hour ago',
-      type: 'order',
-      unread: false
+      unread: false,
+      avatar: '💰'
+    },
+    {
+      id: 4,
+      type: 'system',
+      title: 'System Update',
+      message: 'New features available in analytics dashboard',
+      time: '2 hours ago',
+      unread: false,
+      avatar: '🔧'
     }
   ];
 
   const unreadCount = notifications.filter(n => n.unread).length;
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/auth/login';
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log('Search:', searchTerm);
+    console.log('Searching for:', searchQuery);
+    // Implement search functionality
   };
 
-  const handleProfileAction = (action) => {
-    console.log('Profile action:', action);
-    setShowProfileMenu(false);
+  const formatTime = (date) => {
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
   };
 
-  const handleNotificationClick = (notification) => {
-    console.log('Notification clicked:', notification);
-    setShowNotifications(false);
+  const formatDate = (date) => {
+    return date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const getInitials = (name) => {
+    if (!name) return 'A';
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  };
+
+  const markAllAsRead = () => {
+    // Update all notifications as read
+    console.log('Marking all notifications as read');
   };
 
   return (
     <header className="admin-header">
       <div className="header-left">
-        <button className="mobile-menu-btn" onClick={onToggleSidebar}>
+        <button 
+          className="sidebar-toggle-btn"
+          onClick={onToggleSidebar}
+          aria-label="Toggle sidebar"
+        >
           <Menu size={20} />
         </button>
 
-        <div className="breadcrumb">
-          <span className="breadcrumb-item">Admin</span>
-          <span className="breadcrumb-separator">/</span>
-          <span className="breadcrumb-item current">Dashboard</span>
-        </div>
-      </div>
-
-      <div className="header-center">
-        <div className="search-form">
-          <div className="search-input-wrapper">
-            <Search size={18} className="search-icon" />
-            <input
-              type="text"
-              placeholder="Search vendors, orders, customers..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-              onKeyPress={(e) => e.key === 'Enter' && handleSearch(e)}
-            />
+        <div className="header-info">
+          <div className="date-time">
+            <div className="current-time">
+              <Clock size={16} />
+              {formatTime(currentTime)}
+            </div>
+            <div className="current-date">
+              <Calendar size={16} />
+              {formatDate(currentTime)}
+            </div>
           </div>
         </div>
+
+        <form className="search-form" onSubmit={handleSearch}>
+          <div className="search-container">
+            <Search size={18} />
+            <input
+              type="text"
+              placeholder="Search orders, vendors, customers..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                className="search-clear"
+                onClick={() => setSearchQuery('')}
+              >
+                ×
+              </button>
+            )}
+          </div>
+        </form>
       </div>
 
       <div className="header-right">
         {/* Help Button */}
-        <button className="header-icon-btn" title="Help & Support">
-          <HelpCircle size={20} />
+        <button
+          className="header-action-btn"
+          title="Help & Support"
+        >
+          <HelpCircle size={18} />
+        </button>
+
+        {/* Dark Mode Toggle */}
+        <button
+          className="header-action-btn"
+          onClick={() => setDarkMode(!darkMode)}
+          title="Toggle dark mode"
+        >
+          {darkMode ? <Sun size={18} /> : <Moon size={18} />}
         </button>
 
         {/* Notifications */}
-        <div className="notification-wrapper">
-          <button 
-            className="header-icon-btn notification-btn"
+        <div className="notification-container" ref={notificationRef}>
+          <button
+            className="header-action-btn notification-btn"
             onClick={() => setShowNotifications(!showNotifications)}
+            title="View notifications"
           >
-            <Bell size={20} />
+            <Bell size={18} />
             {unreadCount > 0 && (
-              <span className="notification-badge">{unreadCount}</span>
+              <span className="notification-badge">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
             )}
           </button>
 
           {showNotifications && (
-            <>
-              <div 
-                className="dropdown-overlay" 
-                onClick={() => setShowNotifications(false)}
-              ></div>
-              <div className="notifications-dropdown">
-                <div className="dropdown-header">
-                  <h3>Notifications</h3>
-                  <span className="notification-count">{unreadCount} new</span>
-                </div>
-                <div className="notifications-list">
-                  {notifications.map(notification => (
-                    <div 
-                      key={notification.id}
-                      className={`notification-item ${notification.unread ? 'unread' : ''}`}
-                      onClick={() => handleNotificationClick(notification)}
-                    >
-                      <div className="notification-content">
-                        <div className="notification-title">{notification.title}</div>
-                        <div className="notification-message">{notification.message}</div>
-                        <div className="notification-time">{notification.time}</div>
-                      </div>
-                      {notification.unread && <div className="unread-dot"></div>}
-                    </div>
-                  ))}
-                </div>
-                <div className="dropdown-footer">
-                  <button className="view-all-btn">View all notifications</button>
-                </div>
+            <div className="notifications-dropdown">
+              <div className="dropdown-header">
+                <h3>Notifications</h3>
+                <button className="mark-all-read" onClick={markAllAsRead}>
+                  Mark all read
+                </button>
               </div>
-            </>
+              
+              <div className="notifications-list">
+                {notifications.map(notification => (
+                  <div 
+                    key={notification.id} 
+                    className={`notification-item ${notification.unread ? 'unread' : ''}`}
+                  >
+                    <div className="notification-avatar">
+                      {notification.avatar}
+                    </div>
+                    <div className="notification-content">
+                      <h4>{notification.title}</h4>
+                      <p>{notification.message}</p>
+                      <span className="notification-time">{notification.time}</span>
+                    </div>
+                    {notification.unread && <div className="unread-indicator"></div>}
+                  </div>
+                ))}
+              </div>
+              
+              <div className="dropdown-footer">
+                <button className="view-all-notifications">
+                  View all notifications
+                </button>
+              </div>
+            </div>
           )}
         </div>
 
         {/* Profile Menu */}
-        <div className="profile-wrapper">
-          <button 
+        <div className="profile-container" ref={profileMenuRef}>
+          <button
             className="profile-btn"
             onClick={() => setShowProfileMenu(!showProfileMenu)}
+            aria-label="Profile menu"
           >
             <div className="profile-avatar">
-              <span>A</span>
+              {getInitials(user?.name || 'Admin User')}
             </div>
             <div className="profile-info">
-              <div className="profile-name">Admin User</div>
-              <div className="profile-role">Administrator</div>
+              <span className="profile-name">{user?.name || 'Admin User'}</span>
+              <span className="profile-role">Administrator</span>
             </div>
-            <ChevronDown size={16} className="profile-chevron" />
+            <ChevronDown size={16} className={`chevron ${showProfileMenu ? 'rotated' : ''}`} />
           </button>
 
           {showProfileMenu && (
-            <>
-              <div 
-                className="dropdown-overlay" 
-                onClick={() => setShowProfileMenu(false)}
-              ></div>
-              <div className="profile-dropdown">
-                <div className="dropdown-header">
-                  <div className="profile-avatar large">A</div>
-                  <div className="profile-details">
-                    <div className="profile-name">Admin User</div>
-                    <div className="profile-email">admin@evea.com</div>
-                  </div>
+            <div className="profile-dropdown">
+              <div className="dropdown-user-info">
+                <div className="user-avatar">
+                  {getInitials(user?.name || 'Admin User')}
                 </div>
-                <div className="dropdown-menu">
-                  <button 
-                    className="dropdown-item"
-                    onClick={() => handleProfileAction('profile')}
-                  >
-                    <User size={16} />
-                    <span>Profile Settings</span>
-                  </button>
-                  <button 
-                    className="dropdown-item"
-                    onClick={() => handleProfileAction('settings')}
-                  >
-                    <Settings size={16} />
-                    <span>Account Settings</span>
-                  </button>
-                  <div className="dropdown-divider"></div>
-                  <button 
-                    className="dropdown-item logout"
-                    onClick={() => handleProfileAction('logout')}
-                  >
-                    <LogOut size={16} />
-                    <span>Sign Out</span>
-                  </button>
+                <div className="user-details">
+                  <div className="user-name">{user?.name || 'Admin User'}</div>
+                  <div className="user-email">{user?.email || 'admin@evea.com'}</div>
                 </div>
               </div>
-            </>
+              
+              <div className="dropdown-divider"></div>
+              
+              <div className="dropdown-item">
+                <User size={16} />
+                <span>My Profile</span>
+              </div>
+              
+              <div className="dropdown-item">
+                <Settings size={16} />
+                <span>Account Settings</span>
+              </div>
+              
+              <div className="dropdown-item">
+                <Shield size={16} />
+                <span>Security</span>
+              </div>
+              
+              <div className="dropdown-item">
+                <Mail size={16} />
+                <span>Messages</span>
+              </div>
+              
+              <div className="dropdown-divider"></div>
+              
+              <button className="dropdown-item logout-item" onClick={handleLogout}>
+                <LogOut size={16} />
+                <span>Sign Out</span>
+              </button>
+            </div>
           )}
         </div>
       </div>

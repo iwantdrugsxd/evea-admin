@@ -41,6 +41,15 @@ const RevenueChart = () => {
     { value: '3months', label: 'Last 3 months' }
   ];
 
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
+  };
+
   const handleExport = () => {
     console.log('Exporting revenue data...');
     // Implementation for exporting data
@@ -50,42 +59,39 @@ const RevenueChart = () => {
     <div className="revenue-chart">
       <div className="chart-header">
         <div className="chart-title-section">
-          <h3>Revenue Analytics</h3>
+          <h3>Revenue Overview</h3>
           <div className="chart-summary">
             <div className="summary-item">
-              <span className="summary-value">₹{totalRevenue.toLocaleString()}</span>
               <span className="summary-label">Total Revenue</span>
+              <span className="summary-value">{formatCurrency(totalRevenue)}</span>
             </div>
             <div className="summary-item">
-              <span className="summary-value">{totalOrders}</span>
               <span className="summary-label">Total Orders</span>
-            </div>
-            <div className="trend-indicator positive">
-              <TrendingUp size={16} />
-              <span>+12.5%</span>
+              <span className="summary-value">{totalOrders}</span>
             </div>
           </div>
         </div>
         
         <div className="chart-controls">
           <select 
-            value={selectedPeriod}
+            className="period-select" 
+            value={selectedPeriod} 
             onChange={(e) => setSelectedPeriod(e.target.value)}
-            className="period-select"
           >
-            {periods.map(period => (
+            {periods.map((period) => (
               <option key={period.value} value={period.value}>
                 {period.label}
               </option>
             ))}
           </select>
           
-          <div className="chart-actions">
-            <button className="action-btn" onClick={handleExport}>
-              <Download size={16} />
-            </button>
+          <button className="chart-action-btn" onClick={handleExport}>
+            <Download size={16} />
+          </button>
+          
+          <div className="chart-options">
             <button 
-              className="action-btn"
+              className="chart-action-btn"
               onClick={() => setShowOptions(!showOptions)}
             >
               <MoreVertical size={16} />
@@ -93,9 +99,15 @@ const RevenueChart = () => {
             
             {showOptions && (
               <div className="options-dropdown">
-                <button onClick={() => console.log('View details')}>View Details</button>
-                <button onClick={() => console.log('Compare periods')}>Compare Periods</button>
-                <button onClick={handleExport}>Export Data</button>
+                <button onClick={() => console.log('View Details')}>
+                  View Details
+                </button>
+                <button onClick={() => console.log('Share Chart')}>
+                  Share Chart
+                </button>
+                <button onClick={handleExport}>
+                  Export Data
+                </button>
               </div>
             )}
           </div>
@@ -105,73 +117,47 @@ const RevenueChart = () => {
       <div className="chart-container">
         <div className="chart-grid">
           {/* Y-axis labels */}
-          <div className="y-axis">
-            <span className="y-label">₹{Math.round(maxRevenue / 1000)}K</span>
-            <span className="y-label">₹{Math.round(maxRevenue * 0.75 / 1000)}K</span>
-            <span className="y-label">₹{Math.round(maxRevenue * 0.5 / 1000)}K</span>
-            <span className="y-label">₹{Math.round(maxRevenue * 0.25 / 1000)}K</span>
-            <span className="y-label">₹0</span>
+          <div className="chart-y-axis">
+            {[100, 75, 50, 25, 0].map((percent) => (
+              <div key={percent} className="y-axis-label">
+                {formatCurrency((maxRevenue * percent) / 100)}
+              </div>
+            ))}
           </div>
           
           {/* Chart bars */}
           <div className="chart-bars">
-            {currentData.map((item, index) => (
-              <div key={index} className="bar-container">
-                <div 
-                  className="revenue-bar"
-                  style={{ height: `${(item.revenue / maxRevenue) * 100}%` }}
-                  title={`${item.day}: ₹${item.revenue.toLocaleString()} (${item.orders} orders)`}
-                >
-                  <div className="bar-tooltip">
-                    <div className="tooltip-revenue">₹{item.revenue.toLocaleString()}</div>
-                    <div className="tooltip-orders">{item.orders} orders</div>
+            {currentData.map((data, index) => {
+              const barHeight = (data.revenue / maxRevenue) * 100;
+              return (
+                <div key={index} className="chart-bar-container">
+                  <div className="chart-tooltip">
+                    <div className="tooltip-content">
+                      <strong>{formatCurrency(data.revenue)}</strong>
+                      <br />
+                      {data.orders} orders
+                    </div>
                   </div>
+                  <div 
+                    className="chart-bar" 
+                    style={{ height: `${barHeight}%` }}
+                  ></div>
+                  <div className="x-axis-label">{data.day}</div>
                 </div>
-                <div className="bar-label">{item.day}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-        
-        <div className="chart-legend">
-          <div className="legend-item">
-            <div className="legend-color revenue"></div>
-            <span>Revenue</span>
-          </div>
-          <div className="legend-item">
-            <div className="legend-color orders"></div>
-            <span>Orders</span>
+              );
+            })}
           </div>
         </div>
       </div>
 
-      <div className="chart-insights">
-        <div className="insight-item">
-          <div className="insight-icon trend-up">
-            <TrendingUp size={20} />
-          </div>
-          <div className="insight-content">
-            <div className="insight-title">Revenue Growth</div>
-            <div className="insight-description">
-              {selectedPeriod === '7days' && 'Weekend sales showing 25% higher conversion'}
-              {selectedPeriod === '30days' && 'Steady month-over-month growth of 12.5%'}
-              {selectedPeriod === '3months' && 'Quarterly revenue increased by 40%'}
-            </div>
-          </div>
+      <div className="chart-legend">
+        <div className="legend-item">
+          <div className="legend-color revenue-color"></div>
+          <span>Revenue</span>
         </div>
-        
-        <div className="insight-item">
-          <div className="insight-icon calendar">
-            <Calendar size={20} />
-          </div>
-          <div className="insight-content">
-            <div className="insight-title">Peak Performance</div>
-            <div className="insight-description">
-              {selectedPeriod === '7days' && 'Saturday generated highest revenue (₹73K)'}
-              {selectedPeriod === '30days' && 'Week 3 was the most profitable period'}
-              {selectedPeriod === '3months' && 'Month 3 showed exceptional performance'}
-            </div>
-          </div>
+        <div className="trend-indicator">
+          <TrendingUp size={16} />
+          <span className="trend-text positive">+15.3% vs last period</span>
         </div>
       </div>
     </div>

@@ -5,8 +5,8 @@ import {
 } from 'lucide-react';
 import AdminLayout from '../components/common/admin-layout/Admin-Layout.jsx';
 // import FinancialCards from '../components/admin/financial/financial-cards/FinancialCards.jsx';  // Corrected
-import TransactionTable from '../components/admin/financial/transactions-table/TransactionsTable.jsx';  // Corrected
-import PayoutManagement from '../components/admin/financial/payout-management/PayoutManagement.jsx';  // Corrected
+// import TransactionTable from '../components/admin/financial/transactions-table/TransactionsTable.jsx';  // Corrected
+// import PayoutManagement from '../components/admin/financial/payout-management/PayoutManagement.jsx';  // Corrected
 import './financial-management.css';
 
 const FinancialManagement = () => {

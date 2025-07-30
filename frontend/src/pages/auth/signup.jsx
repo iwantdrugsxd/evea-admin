@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { User, Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import apiCall from '../../utils/api'; // Import the API utility
 import './auth.css';
 
 const Signup = () => {
@@ -28,11 +29,8 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch('/api/auth/signup', {
+      const data = await apiCall('/api/auth/signup', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
@@ -41,15 +39,12 @@ const Signup = () => {
         }),
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setSuccess(true);
-      } else {
-        setError(data.message || 'Registration failed');
-      }
+      setSuccess(true);
+      console.log('Signup successful:', data);
+      
     } catch (error) {
-      setError('Network error. Please try again.');
+      setError(error.message || 'Registration failed');
+      console.error('Signup error:', error);
     } finally {
       setLoading(false);
     }
@@ -69,7 +64,7 @@ const Signup = () => {
           <div className="success-message">
             <CheckCircle size={48} />
             <h2>Account Created Successfully!</h2>
-            <p>Please check your email to verify your account before signing in.</p>
+            <p>You can now sign in to your admin account.</p>
             <a href="/auth/login" className="auth-button">
               Go to Login
             </a>
@@ -153,9 +148,6 @@ const Signup = () => {
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
-            <small className="password-hint">
-              Password must be at least 8 characters long
-            </small>
           </div>
 
           <div className="form-group">
@@ -169,6 +161,7 @@ const Signup = () => {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 placeholder="Confirm your password"
+                minLength="8"
                 required
               />
               <button
@@ -181,18 +174,11 @@ const Signup = () => {
             </div>
           </div>
 
-          <div className="form-options">
-            <label className="checkbox-label">
-              <input type="checkbox" required />
-              <span>I agree to the Terms of Service and Privacy Policy</span>
-            </label>
-          </div>
-
           <button type="submit" className="auth-button" disabled={loading}>
             {loading ? (
               <>
                 <Loader2 size={16} className="spinning" />
-                Creating Account...
+                Creating account...
               </>
             ) : (
               'Create Account'

@@ -1,64 +1,66 @@
 import React from 'react';
-import { 
-  DollarSign, UserCheck, ShoppingBag, Calendar,
-  TrendingUp, TrendingDown 
-} from 'lucide-react';
+import { Users, ShoppingBag, IndianRupee, TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import './StatsGrid.css';
 
 const StatsGrid = () => {
   const stats = [
     {
-      title: 'Total Revenue',
-      value: '₹2,45,67,890',
+      id: 'vendors',
+      title: 'Total Vendors',
+      value: '248',
       change: '+12.5%',
       changeType: 'positive',
-      icon: <DollarSign size={24} />,
-      color: 'green',
-      description: 'vs last month'
+      icon: <Users size={24} />,
+      iconColor: 'green',
+      description: '23 new this month'
     },
     {
-      title: 'Active Vendors',
-      value: '1,247',
+      id: 'orders',
+      title: 'Active Orders',
+      value: '1,423',
       change: '+8.2%',
       changeType: 'positive',
-      icon: <UserCheck size={24} />,
-      color: 'blue',
-      description: 'verified vendors'
-    },
-    {
-      title: 'Total Orders',
-      value: '8,945',
-      change: '+15.7%',
-      changeType: 'positive',
       icon: <ShoppingBag size={24} />,
-      color: 'purple',
-      description: 'this month'
+      iconColor: 'blue',
+      description: '156 pending approval'
     },
     {
-      title: 'Monthly Events',
-      value: '456',
-      change: '+22.1%',
+      id: 'revenue',
+      title: 'Monthly Revenue',
+      value: '₹12,45,000',
+      change: '+15.3%',
       changeType: 'positive',
-      icon: <Calendar size={24} />,
-      color: 'orange',
-      description: 'events completed'
+      icon: <IndianRupee size={24} />,
+      iconColor: 'purple',
+      description: 'Target: ₹15,00,000'
+    },
+    {
+      id: 'growth',
+      title: 'Growth Rate',
+      value: '23.4%',
+      change: '-2.1%',
+      changeType: 'negative',
+      icon: <TrendingUp size={24} />,
+      iconColor: 'orange',
+      description: 'vs last quarter'
     }
   ];
 
   return (
     <div className="stats-grid">
-      {stats.map((stat, index) => (
-        <div key={index} className={`stat-card stat-${stat.color}`}>
+      {stats.map((stat) => (
+        <div key={stat.id} className={`stat-card stat-${stat.iconColor}`}>
           <div className="stat-header">
-            <div className={`stat-icon stat-icon-${stat.color}`}>
+            <div className={`stat-icon stat-icon-${stat.iconColor}`}>
               {stat.icon}
             </div>
             <div className={`stat-change ${stat.changeType}`}>
-              {stat.changeType === 'positive' ? 
-                <TrendingUp size={16} /> : 
-                <TrendingDown size={16} />
-              }
-              <span>{stat.change}</span>
+              {stat.changeType === 'positive' ? (
+                <ArrowUpRight size={16} />
+              ) : (
+                <ArrowDownRight size={16} />
+              )}
+              {stat.change}
             </div>
           </div>
           
@@ -71,8 +73,8 @@ const StatsGrid = () => {
           <div className="stat-footer">
             <div className="stat-progress">
               <div 
-                className={`stat-progress-bar stat-progress-${stat.color}`}
-                style={{width: '75%'}}
+                className={`stat-progress-bar stat-progress-${stat.iconColor}`} 
+                style={{ width: '75%' }}
               ></div>
             </div>
           </div>

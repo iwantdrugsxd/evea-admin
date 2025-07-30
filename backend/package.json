@@ -9,7 +9,11 @@
     "build": "cd ../frontend && npm run build",
     "postbuild": "npm start",
     "test": "jest",
-    "seed": "node scripts/seed.js"
+    "test:watch": "jest --watch",
+    "seed": "node scripts/seed.js",
+    "db:reset": "node scripts/resetDb.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -34,6 +38,7 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.0",
+    "eslint": "^8.45.0",
     "jest": "^29.6.2",
     "nodemon": "^3.0.1",
     "supertest": "^6.3.3"
@@ -42,8 +47,19 @@
     "event-planning",
     "vendor-management",
     "booking-platform",
-    "admin-dashboard"
+    "admin-dashboard",
+    "passport-js",
+    "mongodb",
+    "express"
   ],
   "author": "EVEA Team",
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/evea-platform.git"
+  }
 }
